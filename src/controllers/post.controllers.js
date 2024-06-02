@@ -66,7 +66,7 @@ const updatePost = asyncHandler(async (req, res) => {
     throw new ApiError(404, "post with given id doesn't exist!");
   }
 
-  const postImg = uploadPostImg(postImgLocalPath);
+  const postImg = await uploadPostImg(postImgLocalPath);
 
   const updatedPost = await Post.findByIdAndUpdate(post._id, {
     $set: {
