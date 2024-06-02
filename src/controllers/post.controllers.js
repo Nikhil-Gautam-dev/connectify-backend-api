@@ -10,7 +10,7 @@ const uploadPostImg = async function (postImgLocalPath) {
     return "";
   }
 
-  postImg = await uploadOnCloudinary(postImgLocalPath);
+  const postImg = await uploadOnCloudinary(postImgLocalPath);
 
   return postImg;
 };
@@ -27,12 +27,13 @@ const createPost = asyncHandler(async (req, res) => {
   }
 
   const postImgLocalPath = req.file?.path;
-  const postImg = uploadPostImg(postImgLocalPath);
+
+  const postImg = await uploadPostImg(postImgLocalPath);
 
   const newPost = await Post.create({
     title,
     content,
-    createdby: req.user._id,
+    createdby: req.user.username,
     tags: tags || [],
     postImgUrl: postImg?.url || "",
   });

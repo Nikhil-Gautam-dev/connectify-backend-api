@@ -113,6 +113,7 @@ const loginUser = asyncHandler(async (req, res) => {
         200,
         {
           user: loggedInUser,
+          expiry:(1*24*60*60).toString(),
           accessToken: accessToken,
           refreshToken: refreshToken,
         },

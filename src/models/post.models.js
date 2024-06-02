@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema(
     {
         createdby:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"User"
+            type:String,
+            required:true,
+            unique:true
         },
         title:{
             type:String,
