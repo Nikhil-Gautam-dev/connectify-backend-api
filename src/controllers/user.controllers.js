@@ -172,6 +172,31 @@ const userInfo = asyncHandler(async (req, res) => {
   }
 });
 
+
+const findUser = asyncHandler(async (req,res) => {
+  const {username,id} = req.body 
+
+  if(!username && !id){
+    throw new ApiError(400,"username or id is rrequired")
+  }
+
+  const user = await User.find({
+    $or:[
+      {username},
+      {_id:id}
+    ]
+  }).select("-password -refreshToken -createdAt -updatedAt -__v") 
+
+  if(!user){
+    throw new ApiError(400,"user doesn't exist!")
+  }
+
+  return res.status(200).json({
+    message: "success",
+    data: user,
+  });
+
+})
 const updateAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path;
 
@@ -248,4 +273,5 @@ export {
   updateAvatar,
   followOtherUser,
   searchUser,
+  findUser
 };

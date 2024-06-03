@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { followOtherUser, loginUser, logoutUser, registerUser, searchUser, updateAvatar, userInfo } from "../controllers/user.controllers.js";
+import { findUser, followOtherUser, loginUser, logoutUser, registerUser, searchUser, updateAvatar, userInfo } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
@@ -25,6 +25,7 @@ userRouter.route("/auth/logout").post(verifyJWT,logoutUser)
 userRouter.route("/").get(verifyJWT,userInfo)
 
 userRouter.route("/:id").get(verifyJWT,userInfo)
+userRouter.route("/query/find").get(verifyJWT,findUser)
 
 
 // update routes 
