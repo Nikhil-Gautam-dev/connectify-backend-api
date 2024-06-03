@@ -174,7 +174,8 @@ const userInfo = asyncHandler(async (req, res) => {
 
 
 const findUser = asyncHandler(async (req,res) => {
-  const {username,id} = req.body 
+  const username = req.query.username
+  const id = req.query.id
 
   if(!username && !id){
     throw new ApiError(400,"username or id is rrequired")
