@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findUser, followOtherUser, loginUser, logoutUser, registerUser, searchUser, updateAvatar, userInfo } from "../controllers/user.controllers.js";
+import { findUser, followOtherUser, loginUser, logoutUser, registerUser, searchUser, unFollowOtherUser, updateAvatar, updateBio, userInfo } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
@@ -36,10 +36,31 @@ userRouter.route("/avatar").put(
     updateAvatar
 )
 
-userRouter.route("/:id/follow").post(
+userRouter.route("/bio").put(
+    verifyJWT,
+    updateBio
+)
+
+userRouter.route("/id/:id/follow").post(
     verifyJWT,
    followOtherUser
 )
+userRouter.route("/username/:username/follow").post(
+    verifyJWT,
+   followOtherUser
+)
+
+
+userRouter.route("/id/:id/follow").delete(
+    verifyJWT,
+    unFollowOtherUser
+)
+userRouter.route("/username/:username/follow").delete(
+    verifyJWT,
+   unFollowOtherUser
+)
+
+
 
 userRouter.route("/query/search").get(searchUser)
 

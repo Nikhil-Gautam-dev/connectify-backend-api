@@ -3,6 +3,7 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { Query } from "mongoose";
 
 const generateAccessAndRefreshToken = async (user_id) => {
   try {
@@ -52,6 +53,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     gender,
+    bio:"This is your bio section you can edit it !",
     avatar: avatar?.url || "",
   });
 
@@ -219,20 +221,68 @@ const updateAvatar = asyncHandler(async (req, res) => {
 });
 
 const followOtherUser = asyncHandler(async (req, res) => {
-  try {
-    await User.findByIdAndUpdate(req.params.id, {
-      $push: {
-        followers: req.user._id,
-      },
-    });
+    if(req.params?.id){
+
+      if(req.params.id == req.user._id){
+        throw new ApiError(400,"can't be followed")
+      }
+      await User.findByIdAndUpdate(req.params.id, {
+        $push: {
+          followers: req.user._id,
+        },
+      });
+    }
+
+    else if(req.params?.username){
+      if(req.params.username == req.user.username){
+        throw new ApiError(400,"can't be followed")
+      }
+      await User.findOneAndUpdate({username:req.params?.username},{
+        $push: {
+          followers: req.user._id,
+        },
+      })
+    }
+   
 
     return res.status(200).json({
       message: "followed successfuly",
     });
-  } catch (error) {
-    throw new ApiError(500, "something went wrong!");
-  }
+  
 });
+
+const unFollowOtherUser = asyncHandler(async(req,res)=>{
+
+
+
+    if(req.params?.id){
+      if(req.params.id == req.user._id){
+        throw new ApiError(400,"can't be unfollowed")
+      }
+      await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          followers: req.user._id,
+        },
+      });
+    }
+
+    else if(req.params?.username){
+      if(req.params.username == req.user.username){
+        throw new ApiError(400,"can't be followed")
+      }
+      await User.findOneAndUpdate({username:req.params?.username},{
+        $pull: {
+          followers: req.user._id,
+        },
+      })
+    }
+   
+
+    return res.status(200).json({
+      message: "unfollowed successfuly",
+    });
+  
+})
 
 const searchUser = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -266,6 +316,22 @@ const searchUser = asyncHandler(async (req, res) => {
   });
 });
 
+const updateBio = asyncHandler(async (req,res)=>{
+    const {bio} = req.body 
+
+    if(!bio){
+      throw new ApiError(400,"Bio is required ")
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id,{
+      $set: {
+        bio:bio
+      },
+    }).select("-password -refreshToken -createdAt -updatedAt -__v") 
+
+    return res.status(200).json(new ApiResponse(200,user,"bio updated"))
+})
+
 export {
   registerUser,
   loginUser,
@@ -274,5 +340,7 @@ export {
   updateAvatar,
   followOtherUser,
   searchUser,
-  findUser
+  findUser,
+  updateBio,
+  unFollowOtherUser
 };

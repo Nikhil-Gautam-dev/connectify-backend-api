@@ -29,6 +29,9 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String
     },
+    bio:{
+      type:String
+    },
     refreshToken:String,
     posts: [
       {
