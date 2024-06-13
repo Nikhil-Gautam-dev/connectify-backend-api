@@ -66,6 +66,13 @@ const updatePost = asyncHandler(async (req, res) => {
     throw new ApiError(404, "post with given id doesn't exist!");
   }
 
+  console.log(post.createdby)
+  console.log(req.user.username)
+
+  if(post.createdby != req.user.username){
+    throw new ApiError(400,"Invalid request")
+  }
+
   const postImg = await uploadPostImg(postImgLocalPath);
 
   const updatedPost = await Post.findByIdAndUpdate(post._id, {
