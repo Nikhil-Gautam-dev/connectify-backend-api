@@ -177,7 +177,7 @@ const searchPost = asyncHandler(async (req, res) => {
 
   let title = req.query?.title;
   let content = req.query?.content;
-  const tags = req.query?.tags;
+  let tags = req.query?.tags;
   const creator = req.query?.creator;
 
   let queryObject = {};
@@ -191,7 +191,9 @@ const searchPost = asyncHandler(async (req, res) => {
   }
 
   if (tags) {
-    queryObject.tags = { $in: tags };
+
+    tags = new RegExp(`^${tags}$`, 'i')
+    queryObject.tags = { $in: [tags]};
   }
 
   if (creator) {
