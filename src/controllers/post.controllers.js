@@ -178,9 +178,13 @@ const searchPost = asyncHandler(async (req, res) => {
   let title = req.query?.title;
   let content = req.query?.content;
   let tags = req.query?.tags;
-  const creator = req.query?.creator;
+  let author = req.query?.author;
 
   let queryObject = {};
+
+  if (author) {
+    queryObject.createdby = author;
+  }
 
   if (title) {
     queryObject.title = { $regex: title, $options: "i" };
@@ -196,14 +200,14 @@ const searchPost = asyncHandler(async (req, res) => {
     queryObject.tags = { $in: [tags]};
   }
 
-  if (creator) {
-    queryObject.createdby = creator;
-  }
+  console.log(queryObject)
+
 
   const posts = await Post.find(queryObject)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
+
 
   const totalPosts = await Post.countDocuments();
   return res.status(200).json({
