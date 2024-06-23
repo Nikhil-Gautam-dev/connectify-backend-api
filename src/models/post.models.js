@@ -1,37 +1,36 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
-    {
-        createdby:{
-            type:String,
-            required:true,
-            unique:true
-        },
-        title:{
-            type:String,
-            required:true
-        },
-        content:{
-            type:String,
-            required:true
-        },
-        postImgUrl:{
-            type:String,
-            default:""
-        },
-        likes:[
-            {
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"User"
-            }
-        ],
-        tags:[
-            {
-                type:String
-            }
-        ]
+  {
+    createdby: {
+      type: String,
+      required: true,
     },
-    {timestamps:true})
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    postImgUrl: {
+      type: String,
+      default: "",
+    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    tags: [
+      {
+        type: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-
-export const Post = mongoose.model("Post",postSchema)
+export const Post = mongoose.model("Post", postSchema);
