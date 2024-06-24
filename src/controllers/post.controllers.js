@@ -66,11 +66,8 @@ const updatePost = asyncHandler(async (req, res) => {
     throw new ApiError(404, "post with given id doesn't exist!");
   }
 
-  console.log(post.createdby)
-  console.log(req.user.username)
-
-  if(post.createdby != req.user.username){
-    throw new ApiError(400,"Invalid request")
+  if (post.createdby != req.user.username) {
+    throw new ApiError(400, "Invalid request");
   }
 
   const postImg = await uploadPostImg(postImgLocalPath);
@@ -80,10 +77,9 @@ const updatePost = asyncHandler(async (req, res) => {
       title: title || post.title,
       content: content || post.content,
       postImgUrl: postImg?.url || post.postImgUrl,
-    },
-    $push: {
       tags: tags,
     },
+    new: true,
   });
 
   return res
@@ -195,19 +191,14 @@ const searchPost = asyncHandler(async (req, res) => {
   }
 
   if (tags) {
-
-    tags = new RegExp(`^${tags}$`, 'i')
-    queryObject.tags = { $in: [tags]};
+    tags = new RegExp(`^${tags}$`, "i");
+    queryObject.tags = { $in: [tags] };
   }
-
-  console.log(queryObject)
-
 
   const posts = await Post.find(queryObject)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
-
 
   const totalPosts = await Post.countDocuments();
   return res.status(200).json({
