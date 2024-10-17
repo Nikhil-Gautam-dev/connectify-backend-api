@@ -9,6 +9,8 @@ export const connectDB = async () => {
       }
     );
 
+    console.log(connectionInstance.Connection.STATES.connected);
+
     console.log(`\n Mongodb connect :)\nhost: ${connectionInstance}`);
   } catch (error) {
     console.error("MONGODB connection error", error);
